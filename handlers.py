@@ -1,5 +1,3 @@
-import asyncio
-
 from aiogram import Router, F
 from aiogram.types import  CallbackQuery
 from aiogram.enums import ParseMode
@@ -17,7 +15,7 @@ async def sold_out(cb: CallbackQuery):
     vk_id = cb.data
     list_users_id = await db.get_list_user_id(vk_id)
     #msg_id = cb.message.message_id 
-    text = cb.message.text
+    msg = cb.message
     click_count = await db.get_value('click_count', vk_id)
     click_count = click_count[0]
 
@@ -30,7 +28,10 @@ async def sold_out(cb: CallbackQuery):
         await db.insert_value_to_vk_id('click_count', click_count, vk_id)
 
         if click_count >= 5 or user_id == 637460660:
-            await cb.message.edit_text(f"{text}\n\n‼️Товар закончился‼️", parse_mode=ParseMode.HTML)
+            try:
+                await cb.message.edit_text(f"{msg.text}\n\n‼️Товар закончился‼️", parse_mode=ParseMode.HTML)
+            except:
+                await cb.message.edit_caption(caption=f"{msg.caption}\n\n‼️Товар закончился‼️", parse_mode=ParseMode.HTML)
         else:
             kbn = await kb.sold_out(cb.data, click_count)
-            await cb.message.edit_text(f"{text}", reply_markup=kbn)
+            await cb.message.edit_reply_markup(reply_markup=kbn)

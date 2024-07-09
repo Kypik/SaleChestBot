@@ -30,10 +30,16 @@ async def creat_new_post():
         if post:
             id = post['id']
             photos = post['photos']
-            media = [InputMediaPhoto(media=photo) for photo in photos]
+            text = post['text']
             kbn = await kb.sold_out(id)
-            await bot.send_media_group(chat_id=channel_id, media=media)
-            await bot.send_message(chat_id=channel_id, text=post['text'], reply_markup=kbn)
+            if len(photos) == 1:
+                await bot.send_photo(chat_id=channel_id, photo=photos[0], caption=text, reply_markup=kbn)
+                
+            else:
+                media = [InputMediaPhoto(media=photo) for photo in photos]
+                await bot.send_media_group(chat_id=channel_id, media=media)
+                await bot.send_message(chat_id=channel_id, text=text, reply_markup=kbn)
+
         await asyncio.sleep(60)
 
 if __name__ == "__main__":

@@ -1,0 +1,16 @@
+1.py
+salechest.sql
+test.py
+__pycache__/config_reader.cpython-310.pyc
+__pycache__/config_reader.cpython-312.pyc
+__pycache__/db.cpython-310.pyc
+__pycache__/db.cpython-312.pyc
+__pycache__/handlers.cpython-310.pyc
+__pycache__/handlers.cpython-312.pyc
+__pycache__/kb.cpython-310.pyc
+__pycache__/kb.cpython-312.pyc
+__pycache__/main.cpython-310.pyc
+__pycache__/main.cpython-312.pyc
+__pycache__/vk.cpython-310.pyc
+__pycache__/vk.cpython-312.pyc
+.env
