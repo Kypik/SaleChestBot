@@ -3,7 +3,6 @@ from aiogram.types import  CallbackQuery
 from aiogram.enums import ParseMode
 
 import kb, db
-from main import bot, channel_id
 
 rout = Router()
 
@@ -14,11 +13,13 @@ async def sold_out(cb: CallbackQuery):
     user_id = cb.from_user.id
     vk_id = cb.data
     list_users_id = await db.get_list_user_id(vk_id)
-    #msg_id = cb.message.message_id 
     msg = cb.message
-    click_count = await db.get_value('click_count', vk_id)
-    click_count = click_count[0]
-
+    temp= await db.get_value('click_count', vk_id)
+    if temp is None:
+        click_count = 0
+    else:
+        click_count = temp[0]
+        
     if user_id in list_users_id:
         await cb.answer("Вы уже проголосовали!")
     else:
@@ -29,9 +30,10 @@ async def sold_out(cb: CallbackQuery):
 
         if click_count >= 5 or user_id == 637460660:
             try:
-                await cb.message.edit_text(f"{msg.text}\n\n‼️Товар закончился‼️", parse_mode=ParseMode.HTML)
+                # html_text сохраняет форматирование и экранирует < и & — с msg.text пост с & ломался
+                await cb.message.edit_text(f"{msg.html_text}\n\n‼️Товар закончился‼️", parse_mode=ParseMode.HTML)
             except:
-                await cb.message.edit_caption(caption=f"{msg.caption}\n\n‼️Товар закончился‼️", parse_mode=ParseMode.HTML)
+                await cb.message.edit_caption(caption=f"{msg.html_text}\n\n‼️Товар закончился‼️", parse_mode=ParseMode.HTML)
         else:
             kbn = await kb.sold_out(cb.data, click_count)
             await cb.message.edit_reply_markup(reply_markup=kbn)
